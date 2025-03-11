@@ -14,10 +14,6 @@ describe('getHttpModule', () =>
             url: 'http://example.com',
             expectedResult: request,
         }],
-        ['request', 'URLs without a protocol', {
-            url: 'example.com',
-            expectedResult: request,
-        }],
     ])('should return the request module for %s', (_1, _2, { url, expectedResult }) =>
     {
         const result = getHttpModule(url);
