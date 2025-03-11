@@ -16,7 +16,7 @@ module.exports = {
             lines: 100,
         },
     },
-    moduleFileExtensions: ['ts'],
+    moduleFileExtensions: ['js', 'ts'],
     extensionsToTreatAsEsm: ['.ts'],
     resolver: 'ts-jest-resolver',
     transform: {
