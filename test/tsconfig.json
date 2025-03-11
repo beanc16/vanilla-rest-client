@@ -1,0 +1,11 @@
+{
+    "extends": "../tsconfig.json",
+    "include": [
+        "**/**/fakes/**/*.ts",
+        "../__mocks__/**/*.ts",
+        "**/*.test.ts",
+    ],
+    "compilerOptions": {
+        "noEmit": true,
+    },
+}
