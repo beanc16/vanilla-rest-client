@@ -1,0 +1,33 @@
+#!/bin/bash
+
+ALL_PUSHES_CMD="npm run build; npm run lint"
+PROTECTED_PUSHES_CMD="npm run test"
+protected_branch='main'
+
+# Check if we actually have commits to push
+commits=`git log @{u}..`
+if [ -z "$commits" ]; then
+    exit 0
+fi
+
+# Get the current branch
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+# Run command for pushes to all branches
+eval $ALL_PUSHES_CMD
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+    echo "failed $ALL_PUSHES_CMD"
+    exit 1
+fi
+
+# Run command for pushes to protected branch
+if [[ $current_branch = $protected_branch ]]; then
+    eval $PROTECTED_PUSHES_CMD
+    RESULT=$?
+    if [ $RESULT -ne 0 ]; then
+        echo "failed $PROTECTED_PUSHES_CMD"
+        exit 1
+    fi
+fi
+exit 0
