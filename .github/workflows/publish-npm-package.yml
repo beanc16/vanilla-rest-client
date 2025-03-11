@@ -1,9 +1,10 @@
 name: Publish NPM Package
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: # TODO: Change this to auto-publish on push to main after v1.0.0 setup is complete
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   publish-npm-package:
