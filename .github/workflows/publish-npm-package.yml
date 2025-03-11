@@ -1,0 +1,62 @@
+name: Publish NPM Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-npm-package:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    outputs:
+      package-version: ${{ steps.package-version.outputs.current-version }}
+    name: Publish NPM Package
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Set Current Package Version as a Variable
+        id: package-version   # Can be referenced with ${{ steps.package-version.outputs.current-version }}
+        uses: martinbeentjes/npm-get-version-action@main
+      - name: Install Dependencies
+        run: npm install
+      - name: Publish Package
+        run: npm publish
+
+  notify-discord:
+    runs-on: ubuntu-latest
+    needs: [
+      publish-npm-package,
+    ]
+    name: Notify Discord
+    steps:
+      - name: Notify Discord on Success
+        if: success()
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
+        with:
+          args:
+            '✅ {{ EVENT_PAYLOAD.repository.full_name }} successfully published v${{ needs.publish-npm-package.outputs.package-version }}'
+      - name: Notify Discord on Failure
+        if: failure()
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
+        with:
+          args:
+            '❌ {{ EVENT_PAYLOAD.repository.full_name }} failed to publish v${{ needs.publish-npm-package.outputs.package-version }}'
+      - name: Notify Discord on Cancel
+        if: cancelled()
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
+        with:
+          args:
+            '❌ {{ EVENT_PAYLOAD.repository.full_name }} cancelled publish v${{ needs.publish-npm-package.outputs.package-version }}'
