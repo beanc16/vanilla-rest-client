@@ -1,22 +1,7 @@
-import request from 'node:http';
-import secureRequest from 'node:https';
-
 import nock from 'nock';
 
 import restClientInstance, { type RequestBody, RestClient } from '../../src/index.js';
 import { getFakeRequestBody } from '../fakes/RestClient.js';
-
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
-jest.mock('../../src/helpers.js', () =>
-{
-    return {
-        getHttpModule: jest.fn((url: string) =>
-        {
-            return url.startsWith('https') ? secureRequest : request;
-        }),
-    };
-});
-/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return */
 
 describe.each([
     ['default export', restClientInstance],
