@@ -6,7 +6,7 @@ import type {
 
 import * as Helpers from '../../src/helpers.js';
 import restClientInstance, { type RequestBody, RestClient } from '../../src/index.js';
-import { getFakeRequestBody } from './fakes/RestClient.js';
+import { getFakeRequestBody } from '../fakes/RestClient.js';
 
 jest.mock('../../src/helpers.js', () =>
 {
