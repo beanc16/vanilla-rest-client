@@ -37,6 +37,9 @@ describe.each([
                 )[method]('/success').reply(
                     200,
                     successResponseData,
+                )[method]('/invalid').reply(
+                    200,
+                    'Invalid JSON',
                 );
             });
 
@@ -55,7 +58,13 @@ describe.each([
 
             it.todo('should correctly parse large responses');
 
-            it.todo('should throw an error for an invalid JSON response');
+            it('should throw an error for an invalid JSON response', async () =>
+            {
+                // @ts-expect-error -- The types are inconsistent between get/delete and post/patch/put, but are correct given the data setup.
+                const promise = restClient[method](`${baseUrl}/invalid`, requestData);
+
+                await expect(promise).rejects.toThrow();
+            });
 
             // 400, 401, 403, 404, 500
             it.todo('should reject on a %s response');
