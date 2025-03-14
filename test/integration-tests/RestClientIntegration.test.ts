@@ -24,21 +24,33 @@ describe.each([
         // @ts-expect-error -- Type 'string' is not assignable to the given type, despite that being exactly what the type is in this case.
         ])('%s', (_3, { method, requestData }: { method: 'get' | 'post' | 'patch' | 'put' | 'delete'; requestData: RequestBody | undefined }) =>
         {
+            const successResponseData = {
+                message: 'Success',
+                ...(requestData ? { data: requestData } : {}),
+            };
+
+            beforeEach(() =>
+            {
+                // Mock the REST request
+                nock(
+                    baseUrl,
+                )[method]('/success').reply(
+                    200,
+                    successResponseData,
+                );
+            });
+
+            afterEach(() =>
+            {
+                nock.cleanAll();
+            });
+
             it('should make a request successfully', async () =>
             {
-                const responseData = {
-                    message: 'Success',
-                    ...(requestData ? { data: requestData } : {}),
-                };
-
-                // Mock the REST request
-                nock(baseUrl)[method]('/success')
-                    .reply(200, responseData);
-
                 // @ts-expect-error -- The types are inconsistent between get/delete and post/patch/put, but are correct given the data setup.
                 const response = await restClient[method](successUrl, requestData);
 
-                expect(response).toEqual(responseData);
+                expect(response).toEqual(successResponseData);
             });
 
             it.todo('should correctly parse large responses');
