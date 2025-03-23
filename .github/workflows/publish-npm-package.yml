@@ -34,7 +34,7 @@ jobs:
       - name: Test
         run: npm run test
       - name: Publish Package
-        run: npm publish --access public
+        run: npm publish
         env:
           NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
