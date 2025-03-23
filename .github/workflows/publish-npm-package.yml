@@ -36,10 +36,11 @@ jobs:
     needs: [
       publish-npm-package,
     ]
+    if: always()
     name: Notify Discord
     steps:
       - name: Notify Discord on Success
-        if: success()
+        if: needs.publish-npm-package.result == 'success'
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
@@ -47,7 +48,7 @@ jobs:
           args:
             '✅ {{ EVENT_PAYLOAD.repository.full_name }} successfully published v${{ needs.publish-npm-package.outputs.package-version }}'
       - name: Notify Discord on Failure
-        if: failure()
+        if: needs.publish-npm-package.result == 'failure'
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
@@ -55,7 +56,7 @@ jobs:
           args:
             '❌ {{ EVENT_PAYLOAD.repository.full_name }} failed to publish v${{ needs.publish-npm-package.outputs.package-version }}'
       - name: Notify Discord on Cancel
-        if: cancelled()
+        if: needs.publish-npm-package.result == 'cancelled'
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_NOTIFICATION_WEBHOOK }}
