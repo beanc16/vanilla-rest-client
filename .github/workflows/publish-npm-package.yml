@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          registry-url: 'https://registry.npmjs.org'
       - name: Set Current Package Version as a Variable
         id: package-version   # Can be referenced with ${{ steps.package-version.outputs.current-version }}
         uses: martinbeentjes/npm-get-version-action@main
