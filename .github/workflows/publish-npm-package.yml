@@ -28,7 +28,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
       - name: Publish Package
-        run: npm publish --access public
+        run: npm publish
         env:
           NPM_PUBLISH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
