@@ -11,6 +11,7 @@ export class RestClient
         url: string,
         body?: RequestBody,
         headers: Record<string, string> = {},
+        queryParams: Record<string, string> = {},
     ): Promise<Response>
     {
         return await new Promise((resolve, reject) =>
@@ -22,7 +23,7 @@ export class RestClient
                 method,
                 hostname: urlObj.hostname,
                 port: urlObj.port || (url.startsWith('https') ? 443 : 80),
-                path: `${urlObj.pathname}${urlObj.search}`,
+                path: `${urlObj.pathname}${new URLSearchParams(queryParams).toString()}`,
                 headers: {
                     'Content-Type': 'application/json',
                     ...headers,
@@ -65,28 +66,51 @@ export class RestClient
         });
     }
 
-    public get<Response>(url: string, headers?: Record<string, string>): Promise<Response>
+    public get<Response>(
+        url: string,
+        headers?: Record<string, string>,
+        queryParams?: Record<string, string>,
+    ): Promise<Response>
     {
-        return this.request<Response>('GET', url, undefined, headers);
+        return this.request<Response>('GET', url, undefined, headers, queryParams);
     }
 
-    public post<Response>(url: string, body: RequestBody, headers?: Record<string, string>): Promise<Response>
+    public post<Response>(
+        url: string,
+        body: RequestBody,
+        headers?: Record<string, string>,
+        queryParams?: Record<string, string>,
+    ): Promise<Response>
     {
-        return this.request<Response>('POST', url, body, headers);
+        return this.request<Response>('POST', url, body, headers, queryParams);
     }
 
-    public patch<Response>(url: string, body: RequestBody, headers?: Record<string, string>): Promise<Response>
+    public patch<Response>(
+        url: string,
+        body: RequestBody,
+        headers?: Record<string, string>,
+        queryParams?: Record<string, string>,
+    ): Promise<Response>
     {
-        return this.request<Response>('PATCH', url, body, headers);
+        return this.request<Response>('PATCH', url, body, headers, queryParams);
     }
 
-    public put<Response>(url: string, body: RequestBody, headers?: Record<string, string>): Promise<Response>
+    public put<Response>(
+        url: string,
+        body: RequestBody,
+        headers?: Record<string, string>,
+        queryParams?: Record<string, string>,
+    ): Promise<Response>
     {
-        return this.request<Response>('PUT', url, body, headers);
+        return this.request<Response>('PUT', url, body, headers, queryParams);
     }
 
-    public delete<Response>(url: string, headers?: Record<string, string>): Promise<Response>
+    public delete<Response>(
+        url: string,
+        headers?: Record<string, string>,
+        queryParams?: Record<string, string>,
+    ): Promise<Response>
     {
-        return this.request<Response>('DELETE', url, undefined, headers);
+        return this.request<Response>('DELETE', url, undefined, headers, queryParams);
     }
 }
