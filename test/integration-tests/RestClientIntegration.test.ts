@@ -66,5 +66,35 @@ describe.each([
 
             it.todo('should timeout if the request takes too long');
         });
+
+        describe.each([
+            ['GET', { method: 'get' }],
+            ['DELETE', { method: 'delete' }],
+        // @ts-expect-error -- Type 'string' is not assignable to the given type, despite that being exactly what the type is in this case.
+        ])('%s', (_3, { method }: { method: 'get' | 'delete' }) =>
+        {
+            it('should make a request with a Buffer return type successfully', async () =>
+            {
+                const response = await restClient[method](successUrl, undefined, undefined, 'application/octet-stream');
+
+                expect(response instanceof Buffer).toEqual(true);
+            });
+        });
+
+        describe.each([
+            ['POST', { method: 'post', requestData: getFakeRequestBody() }],
+            ['PATCH', { method: 'patch', requestData: getFakeRequestBody() }],
+            ['PUT', { method: 'put', requestData: getFakeRequestBody() }],
+        // @ts-expect-error -- Type 'string' is not assignable to the given type, despite that being exactly what the type is in this case.
+        ])('%s', (_3, { method, requestData }: { method: 'post' | 'patch' | 'put'; requestData: RequestBody | undefined }) =>
+        {
+            it('should make a request with a Buffer return type successfully', async () =>
+            {
+                // @ts-expect-error -- The types are inconsistent between get/delete and post/patch/put, but are correct given the data setup.
+                const response = await restClient[method](successUrl, requestData, undefined, undefined, 'application/octet-stream');
+
+                expect(response instanceof Buffer).toEqual(true);
+            });
+        });
     });
 });
